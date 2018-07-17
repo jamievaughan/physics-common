@@ -57,7 +57,7 @@ export class Engine {
                     continue;
 
                 this.collisionImpulse(body, other, mtv);
-                //this.collisionCorrection(world, body, other, mtv);
+                this.collisionCorrection(world, body, other, mtv);
             }
         }
     }
@@ -93,12 +93,12 @@ export class Engine {
         // Apply the impulse for all contact points
         for (const contact of contacts) {
             // TODO: Apply contact friction
-            //body.applyImpulse(contactImpulse, contact);
+            body.applyImpulse(contactImpulse, contact);
 
             if (other.type !== BodyType.DYNAMIC)
                 continue;
 
-            //other.applyImpulse(contactImpulse.invert(true), contact);            
+            other.applyImpulse(contactImpulse.invert(true), contact);            
         }
     }
     

@@ -27,14 +27,14 @@ module.exports = {
 		console: {}
 	},
 	optimization: {
-		minimize: true
+		minimize: false
 	},
 	plugins: [
 		new DtsBundleWebpack({
-			name: 'physics-common',
+			name: 'twodee',
 			main: 'dist/**/*.d.ts',
 			out: 'index.d.ts',
-			removeSource: true,
+			removeSource: false,
 			outputAsModuleFolder: true
 		})
 	]

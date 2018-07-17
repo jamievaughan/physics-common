@@ -4,6 +4,28 @@ import { Vector2 } from './Vector2';
 import * as _ from 'lodash';
 
 export class Polygon {
+    public static create(radius: number, sides: number): Polygon {
+        if (sides < 3)
+            throw new Error("A polygon must have more than 3 sides");
+
+        const vertices: Vector2[] = [];
+
+        const theta = 2 * Math.PI / sides;
+
+        for (let i = 0; i < sides; i++) {
+            const angle = (theta / 2) + (i * theta);
+
+            const x = Math.cos(angle) * radius;
+            const y = Math.sin(angle) * radius;
+
+            vertices.push(new Vector2(x, y));
+        }
+
+        vertices.reverse();
+
+        return new Polygon(vertices);
+    }
+
     private readonly _aabb = new AABB();
     private readonly _center = new Vector2();
 

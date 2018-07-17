@@ -11,6 +11,7 @@ export interface BodyDefinition {
     readonly linearVelocity?: Vector;
     readonly angle?: number;
     readonly mass?: number;
+    readonly inertia?: number;
     readonly angularAcceleration?: number;
     readonly angularVelocity?: number;
     readonly linearDamping?: number;
