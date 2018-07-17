@@ -1,11 +1,11 @@
 {
-    "strict": true,
+	"strict": true,
 	"compilerOptions": {
 		"outDir": "dist/",
 		"target": "es5",
 		"lib": ["es7"],
-        "declaration": true,
-        "experimentalDecorators": true,      
+		"declaration": true,
+		"experimentalDecorators": true,      
 		"strict": true,
 		"noImplicitAny": true,
 		"strictNullChecks": true,

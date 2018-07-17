@@ -1,9 +1,14 @@
 {
+  "typescript": {
+    "definition": "dist/index.d.ts"
+  },
   "dependencies": {
     "lodash": "^4.17.10"
   },
   "devDependencies": {
     "@types/lodash": "^4.14.108",
+    "dts-bundle": "^0.7.3",
+    "dts-bundle-webpack": "^1.0.0",
     "ts-loader": "^4.4.1",
     "webpack": "^4.12.0"
   }
