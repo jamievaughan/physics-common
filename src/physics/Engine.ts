@@ -73,7 +73,7 @@ export class Engine {
 
         const totalInverseMass = body.inverseMass + other.inverseMass;
 
-        const e = Math.min(body.restitution, other.restitution);
+        const e = Math.max(body.restitution, other.restitution);
         const i = (-(1 + e) * velocityNormal) / totalInverseMass;
 
         const impulse = normal.scale(i, true);

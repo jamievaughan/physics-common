@@ -38,18 +38,20 @@ export class Quadrant<TEntity> {
 
         const entry: QuadrantEntry<TEntity> = { entity, bounds };
 
-        this._map.insert(entity, this);
-        this._entries.push(entry);
-
         if (this.entryCount > this._maxEntities) {
-            const entries = [...this._entries];
+            const entries = [...this._entries, entry];
 
             this.clear();
             this.subdivide();
 
             for (const entry of entries)
                 this.insert(entry.entity, entry.bounds);
+
+            return;
         }
+
+        this._map.insert(entity, this);
+        this._entries.push(entry);
     }
 
     public remove(entity: TEntity): void {
@@ -199,8 +201,8 @@ export class Quadrant<TEntity> {
         return this._parent;
     }
 
+    // TODO: This is VERY unperformant
     public get entryCount(): number {
-        // TODO: This is VERY unperformant
         return this.accumulateEntries().length;
     }
 

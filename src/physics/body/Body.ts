@@ -101,8 +101,6 @@ export class Body {
     }
 
     public set inertia(inertia: number) {
-        console.log(inertia);
-
         this._inertia = inertia;
         this._inverseInertia = 1 / inertia;
     }

@@ -6,7 +6,7 @@ module.exports = {
 	output: {
 		path: __dirname,
 		filename: 'dist/index.js',		
-		library: 'common',
+		library: 'physics-common',
 		libraryTarget: 'umd',
 		umdNamedDefine: true
 	},
