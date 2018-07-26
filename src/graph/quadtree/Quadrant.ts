@@ -2,31 +2,45 @@ import { AABB } from '../../math';
 import { QuadrantEntry } from './QuadrantEntry';
 import { QuadtreeMap } from './QuadtreeMap';
 
+export interface QuadrantProperties<TEntity> {
+    readonly map: QuadtreeMap<TEntity>;
+    readonly bounds: AABB;
+    readonly minEntities: number;
+    readonly maxEntities: number;
+    readonly maxDepth: number;
+    readonly depth?: number;
+    readonly parent?: Quadrant<TEntity> | undefined;
+};
+
 export class Quadrant<TEntity> {
     private readonly _map: QuadtreeMap<TEntity>;
     private readonly _bounds: AABB;
     private readonly _minEntities: number;
     private readonly _maxEntities: number;
+    private readonly _maxDepth: number;
+    private readonly _depth: number;
     private readonly _parent: Quadrant<TEntity> | undefined;
 
     private _entries: QuadrantEntry<TEntity>[] = [];
     private _children: Quadrant<TEntity>[] = [];
     private _hasChildren: boolean = false;
 
-    constructor(map: QuadtreeMap<TEntity>, bounds: AABB, minEntities: number, maxEntities: number, parent?: Quadrant<TEntity>) {
-        this._map = map;
-        this._bounds = bounds;
-        this._minEntities = minEntities;
-        this._maxEntities = maxEntities;
-        this._parent = parent;
+    constructor(properties: QuadrantProperties<TEntity>) {
+        this._map = properties.map;
+        this._bounds = properties.bounds;
+        this._minEntities = properties.minEntities;
+        this._maxEntities = properties.maxEntities;
+        this._maxDepth = properties.maxDepth;
+        this._depth = properties.depth || 0;
+        this._parent = properties.parent;
     }
 
     public insert(entity: TEntity, bounds: AABB): void {
-        if (!this._bounds.intersects(bounds))
+        if (!bounds.intersects(this._bounds))
             return;
 
         if (this._hasChildren) {
-            for (const child of this._children)
+            for (const child of this._children)                
                 child.insert(entity, bounds);
 
             return;
@@ -38,7 +52,7 @@ export class Quadrant<TEntity> {
 
         const entry: QuadrantEntry<TEntity> = { entity, bounds };
 
-        if (this.entryCount > this._maxEntities) {
+        if (this._depth < this._maxDepth && this._entries.length + 1 > this._maxEntities) {
             const entries = [...this._entries, entry];
 
             this.clear();
@@ -56,7 +70,7 @@ export class Quadrant<TEntity> {
 
     public remove(entity: TEntity): void {
         const bubbleCollapse = (quadrant: Quadrant<TEntity> = this): void => {
-            if (quadrant.entryCount >= quadrant._minEntities)
+            if (quadrant._entries.length >= quadrant._minEntities)
                 return;
 
             const entries = quadrant.accumulateEntries();
@@ -155,12 +169,17 @@ export class Quadrant<TEntity> {
                 const minY = y === 0 ? this._bounds.y : this._bounds.centerY;
                 const bounds = new AABB(minX, minY, this._bounds.width / 2, this._bounds.height / 2);
 
-                this._children[x + y * 2] = new Quadrant<TEntity>(
-                    this._map,
-                    bounds,
-                    this._minEntities,
-                    this._maxEntities,
-                    this);
+                const properties: QuadrantProperties<TEntity> = {
+                    map: this._map,
+                    bounds: bounds,
+                    minEntities: this._minEntities,
+                    maxEntities: this._maxEntities,
+                    maxDepth: this._maxDepth,
+                    depth: this._depth + 1,
+                    parent: this
+                };
+
+                this._children[x + y * 2] = new Quadrant<TEntity>(properties);
             }
         }
 

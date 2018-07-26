@@ -9,7 +9,7 @@ export class BHTree<TEntity> extends Quadtree<TEntity> {
     //private readonly _g: number;
 
     constructor(aabb: AABB) {//, theta?: number, g?: number) {
-        super(aabb, 1, 1);
+        super({ bounds: aabb, minEntities: 1, maxEntities: 1 });
 
     //    this._g = g || G;
     //    this._theta = theta || THETA;

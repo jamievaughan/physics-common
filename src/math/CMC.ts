@@ -15,7 +15,7 @@ export class CMC {
             let index = 0;
 
             // Find the closest vertex in the polygon from the normal
-            shape.vertices.forEach((vertex, i) => {            
+            shape.vertices.forEach((vertex, i) => {
                 const projection = normal.dot(vertex);
                 if (projection > max) {
                     max = projection;
@@ -25,11 +25,11 @@ export class CMC {
 
             const first = shape.vertices[0];        
             const last = shape.vertices[shape.length - 1];
-    
+
             const current = shape.vertices[index];
             const next = shape.vertices[index + 1] || first;
             const prev = shape.vertices[index - 1] || last;
-    
+
             const l = current.sub(next, true).normalize();
             const r = current.sub(prev, true).normalize();
 
@@ -83,19 +83,20 @@ export class CMC {
         const reference = flipped ? edgeB : edgeA;
         const incident = flipped ? edgeA : edgeB;
 
-        const referenceEdgeNormal = reference.edge.normalize(true);
+        const refv = reference.edge.normalize(true);
 
-        const o1 = referenceEdgeNormal.dot(reference.v1);
-        const o2 = referenceEdgeNormal.dot(reference.v2);
+        const o1 = refv.dot(reference.v1);
 
         // Clip the incident edge by the first vertex of the reference edge
-        const points = clip(incident.v1, incident.v2, referenceEdgeNormal, o1);
+        const points = clip(incident.v1, incident.v2, refv, o1);
         if (points.length < 2)
             return;
+            
+        const o2 = refv.dot(reference.v2);
 
         // Clip in the opposite direction with the remaining of the
         // incident with the second reference vertex
-        const remaining = clip(points[0], points[1], referenceEdgeNormal.invert(true), -o2);
+        const remaining = clip(points[0], points[1], refv.invert(true), -o2);
         if (remaining.length < 2)
             return;
 
@@ -110,7 +111,7 @@ export class CMC {
 
         // Make sure any final points do not exceed the edge maximum
         remaining.forEach((point, index) => {
-            if (referenceNormal.dot(point) - maximum < 0)
+            if (referenceNormal.dot(point) >= maximum)
                 remaining.splice(index, 1);
         });
 

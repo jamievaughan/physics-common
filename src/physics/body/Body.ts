@@ -9,7 +9,7 @@ const INERTIA_SCALE = 0.2;
 
 const DEFAULT_LINEAR_DAMPING = 0.1;
 const DEFAULT_ANGULAR_DAMPING = 0.1;
-const DEFAULT_RESTITUTION = 0.9;
+const DEFAULT_RESTITUTION = 0.8;
 const DEFAULT_MASS = 0.6;
 
 export class Body {
@@ -68,11 +68,11 @@ export class Body {
         this._shape.rotate(degrees);
     }
 
-    public applyImpulse(impulse: Vector2, point: Vector2): void {
+    public impulse(impulse: Vector2, point: Vector2): void {
         const offset = point.sub(this.position, true);
 
-        this.linearAcceleration.add(impulse.scale(this._inverseMass, true));
-        this.angularAcceleration += offset.cross(impulse) * this._inverseInertia;
+        this.linearVelocity.add(impulse.scale(this._inverseMass, true));
+        this.angularVelcoity += offset.cross(impulse) * this._inverseInertia;
     }
 
     public clearForces(): void {
@@ -114,7 +114,7 @@ export class Body {
     }
 
     public set restitution(restitution: number) {
-        this._restitution = _.clamp(restitution, 0, 1);
+        this._restitution = _.clamp(1 - restitution, 0, 1);
     }
 
     public get shape(): Polygon {

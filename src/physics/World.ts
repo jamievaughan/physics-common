@@ -7,7 +7,12 @@ export class World {
     private _bodies: Body[] = [];
 
     constructor(aabb: AABB) {
-        this._tree = new Quadtree<Body>(aabb, 3, 4);
+        this._tree = new Quadtree<Body>({
+            bounds: aabb,
+            minEntities: 3,
+            maxEntities: 4,
+            maxDepth: 5
+        });
     }
 
     public add(body: Body): void {

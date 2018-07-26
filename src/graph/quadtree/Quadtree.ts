@@ -4,20 +4,40 @@ import { Quadrant } from './Quadrant';
 import { QuadtreeMap } from './QuadtreeMap';
 
 const DEFAULT_MIN_ENTITIES = 3;
-const DEFAULT_MAX_ENTITIES = 3;
+const DEFAULT_MAX_ENTITIES = 4;
+const DEFAULT_MAX_DEPTH = 5;
+
+export interface QuadtreeProperties {
+    readonly bounds: AABB;
+    readonly minEntities?: number;
+    readonly maxEntities?: number;
+    readonly maxDepth?: number;
+}
 
 export class Quadtree<TEntity> {
     private readonly _map = new QuadtreeMap<TEntity>();
     private readonly _root: Quadrant<TEntity>;
 
-    constructor(bounds: AABB, minEntities = DEFAULT_MIN_ENTITIES, maxEntities = DEFAULT_MAX_ENTITIES) {
-        if (!bounds || !bounds.valid)
+    constructor(properties: QuadtreeProperties) {
+        if (!properties)
+            throw new Error("Quadtree must have valid properties");
+
+        if (!properties.bounds || !properties.bounds.valid)
             throw new Error("Quadtree boundaries must be valid");
 
-        if (minEntities <= 0 || minEntities >= maxEntities)
-            throw new Error("Minimum entities must be above zero and less than the maximum");
+        if (properties.minEntities && properties.minEntities <= 0)
+            throw new Error("Minimum entities must be greater than zero");
 
-        this._root = new Quadrant<TEntity>(this._map, bounds, minEntities, maxEntities);
+        if (properties.maxEntities && properties.minEntities && properties.minEntities >= properties.maxEntities)
+            throw new Error("Minimum entities must be less than maximum entities");
+
+        this._root = new Quadrant<TEntity>({
+            map: this._map,
+            bounds: properties.bounds,
+            minEntities: properties.minEntities || DEFAULT_MIN_ENTITIES,
+            maxEntities: properties.maxEntities || DEFAULT_MAX_ENTITIES,
+            maxDepth: properties.maxDepth || DEFAULT_MAX_DEPTH
+        });
     }
 
     public insert(entity: TEntity, bounds: AABB): void {

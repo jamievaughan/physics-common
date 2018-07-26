@@ -73,7 +73,7 @@ export class Engine {
 
         const totalInverseMass = body.inverseMass + other.inverseMass;
 
-        const e = Math.max(body.restitution, other.restitution);
+        const e = Math.min(body.restitution, other.restitution);
         const i = (-(1 + e) * velocityNormal) / totalInverseMass;
 
         const impulse = normal.scale(i, true);
@@ -85,20 +85,19 @@ export class Engine {
         if (!contacts)
             return;
 
-        body.contacts = contacts;
-        other.contacts = contacts;
+        body.contacts = [...contacts, ...body.contacts];
 
         const contactImpulse = impulse.scale(1 / contacts.length, true);
 
         // Apply the impulse for all contact points
         for (const contact of contacts) {
             // TODO: Apply contact friction
-            body.applyImpulse(contactImpulse, contact);
+            body.impulse(contactImpulse, contact);
 
             if (other.type !== BodyType.DYNAMIC)
                 continue;
 
-            other.applyImpulse(contactImpulse.invert(true), contact);            
+            other.impulse(contactImpulse.invert(true), contact);            
         }
     }
     

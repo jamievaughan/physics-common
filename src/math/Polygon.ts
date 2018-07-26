@@ -4,7 +4,7 @@ import { Vector2 } from './Vector2';
 import * as _ from 'lodash';
 
 export class Polygon {
-    public static create(radius: number, sides: number): Polygon {
+    public static create(radius: number, sides: number, clockwise = false): Polygon {
         if (sides < 3)
             throw new Error("A polygon must have more than 3 sides");
 
@@ -21,7 +21,8 @@ export class Polygon {
             vertices.push(new Vector2(x, y));
         }
 
-        vertices.reverse();
+        if (!clockwise)
+            vertices.reverse();
 
         return new Polygon(vertices);
     }
