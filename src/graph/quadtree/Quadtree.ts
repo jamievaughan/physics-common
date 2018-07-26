@@ -50,33 +50,37 @@ export class Quadtree<TEntity> {
         this._root.insert(entity, bounds);
     }
 
-    public remove(entity: TEntity): void {
+    public remove(entity: TEntity): boolean {
         if (!entity)
             throw new Error("Entity must be defined");
 
         const quadrants = this._map.get(entity);
         if (!quadrants)
-            return;
+            return false;
 
         for (const quadrant of quadrants)
             quadrant.remove(entity);
+
+        return true;
     }
 
-    public update(entity: TEntity, newBounds?: AABB): void {
+    public update(entity: TEntity, newBounds?: AABB): boolean {
         if (!entity)
             throw new Error("Entity must be defined");
-  
+
         if (newBounds && !newBounds.valid)
             throw new Error("Entity's new boundaries must be valid");
 
         const quadrants = this._map.get(entity);
         if (!quadrants)
-            return;
+            return false;
 
         for (const quadrant of quadrants)
             quadrant.update(entity, newBounds);
+
+        return true;
     }
-    
+
     public intersections(entity: TEntity): TEntity[] {
         if (!entity)
             throw new Error("Entity must be defined");

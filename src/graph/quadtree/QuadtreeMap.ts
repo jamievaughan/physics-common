@@ -15,6 +15,11 @@ export class QuadtreeMap<TEntity> {
         const existing = this._map.get(entity);
         if (!existing)
             return;
+        
+        if (existing.length === quadrants.length) {
+            this._map.delete(entity);
+            return;
+        }
 
         for (const quadrant of quadrants) {
             const index = existing.indexOf(quadrant);

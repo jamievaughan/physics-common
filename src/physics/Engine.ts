@@ -33,7 +33,8 @@ export class Engine {
                 }
             }
 
-            world.tree.update(body);
+            if (!world.tree.update(body))
+                world.tree.insert(body, body.shape.aabb);
         }
     }
 
